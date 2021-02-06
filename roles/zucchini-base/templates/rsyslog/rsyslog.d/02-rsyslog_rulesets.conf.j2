@@ -1,0 +1,23 @@
+{% for action in rsyslog_rulesets_actions %}
+{{ action.filter }} action( 
+     type="{{ action.type }}"
+     {% for key, value in action.options.items() %}
+          {{ key }}="{{ value }}"
+     {% endfor %}
+)
+
+{% if action.stop %}stop{% endif %}
+{% endfor %}
+
+{% for ruleset in rsyslog_rulesets %}
+ruleset(name="{{ ruleset.name }}"){
+    {{ ruleset.filter }} {
+         {% for action in ruleset.actions %}
+         {{ action }}
+         {% endfor %}
+}
+{% endfor %}
+
+{% for input in rsyslog_rulesets_inputs %}
+input(type="{{ input.type }}" {{ input.options }})
+{% endfor %}

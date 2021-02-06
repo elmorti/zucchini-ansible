@@ -1,0 +1,17 @@
+galaxy_info:
+  author: Samuelito
+  description: Initial provisioning of a Zucchini node.
+  company: Zucchini Universe
+
+  license: MIT
+
+  min_ansible_version: 2.4
+
+  platforms:
+    - name: CentOS
+      versions:
+        - 8
+
+  galaxy_tags: [ provisioning bootstrap install server secure]
+
+dependencies: []

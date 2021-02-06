@@ -1,0 +1,21 @@
+#jinja2: lstrip_blocks: True
+##
+# {{ ansible_managed }}
+
+global(
+	{% for key, value in rsyslog_defaults_global.items() %}
+	{{ key }}="{{ value }}"
+	{% endfor %}
+)
+
+{% for module in rsyslog_input_modules %}
+module(load="{{ module.name }}"{{ " ".join(module.options) }})
+{% endfor %}
+
+main_queue(
+	{% for key, value in rsyslog_defaults_main_queue.items() %}
+	{{ key }}="{{ value }}"
+	{% endfor %}
+)
+
+$IncludeConfig {{ rsyslog_extra_conf }}

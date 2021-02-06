@@ -1,0 +1,11 @@
+---
+- name: "System: Setting values for sysctl"
+  sysctl:
+    sysctl_file: /etc/sysctl.d/010_ansible-sysctl.conf
+    name: "{{ item.key }}"
+    value: "{{ item.value }}"
+    sysctl_set: yes
+    state: present
+    reload: yes
+  with_dict: "{{ sysctl_config }}"
+  when: hostvars[inventory_hostname].environment == "disabled"

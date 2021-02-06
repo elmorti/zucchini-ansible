@@ -1,0 +1,19 @@
+---
+- name: "Packages: Remove post-install packages"
+  dnf:
+    name: "{{ remove_packages }}"
+    state: absent
+
+- name: "Packages: Add post-install packages"
+  dnf:
+    name: "{{ add_packages }}"
+    state: latest
+
+- name: "Packages: DNF Autoremove"
+  dnf:
+    autoremove: yes
+
+- name: "Packages: Upgrade all packages"
+  dnf:
+    name: "*"
+    state: latest

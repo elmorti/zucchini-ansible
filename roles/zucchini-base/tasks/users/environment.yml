@@ -1,0 +1,34 @@
+---
+- name: "Environment: Get repository deploy key"
+  copy:
+    src: "{{ item.deploykey }}"
+    dest: "~/{{ environment_name + \".deploykey\" }}"
+    mode: 0600
+  when: item.name == environment_name
+  loop: "{{ git_repositories }}"
+
+- name: "Environment: Checkout git repository"
+  git:
+    repo: "{{ item.url }}"
+    dest: "/tmp/{{ item.name }}"
+    key_file: "~/{{ environment_name + \".deploykey\"}}"
+    accept_hostkey: yes
+  loop: "{{ git_repositories }}"
+  when: item.name == environment_name    
+
+- name: "Environment: Setup environment"
+  become: "{{ item.name }}"
+  shell:
+    cmd: "/tmp/{{ environment_name }}/zucchini-setup.sh"
+    chdir: "/tmp/{{ environment_name }}"
+    creates: ~/bash.d
+  loop: "{{ users }}"
+  when: item.enabled == true and item.environment == true
+
+- name: "Environment: Clean up"
+  file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - "/tmp/{{ environment_name }}"
+    - "~/{{ environment_name + \".deploykey\" }}"

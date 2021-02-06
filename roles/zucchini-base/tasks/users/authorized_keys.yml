@@ -1,0 +1,6 @@
+- name: "Users: Add Authorized SSH Keys"
+  authorized_key:
+    user: "{{ item.user }}"
+    key: "{{ lookup('file', item.file) }}"
+    state: present
+  loop: "{{ authorized_keys }}"

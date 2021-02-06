@@ -1,0 +1,13 @@
+---
+- include_tasks: "system/time.yml"
+- include_tasks: "packages/packages.yml"
+- include_tasks: "logging/rsyslogd.yml"
+- include_tasks: "users/users.yml"
+- include_tasks: "users/authorized_keys.yml"
+- include_tasks: "users/environment.yml"
+- include_tasks: "keys/distribute_keys.yml"
+- include_tasks: "security/sudoers.yml"
+- include_tasks: "system/sysctl.yml"
+- include_tasks: "network/networking.yml"
+- include_tasks: "security/sshd.yml"
+- include_tasks: "system/services.yml"

@@ -1,0 +1,33 @@
+---
+- name: "Logging: Add rsyslog repository"
+  yum_repository:
+    name: rsyslog
+    description: RSyslog Adiscon
+    baseurl: http://rpms.adiscon.com/v8-stable/epel-$releasever/$basearch
+    enabled: 1
+    gpgcheck: 1
+    gpgkey: http://rpms.adiscon.com/RPM-GPG-KEY-Adiscon
+
+- name: "Logging: Update rsyslog"
+  dnf:
+    name: rsyslog
+    state: latest
+
+- name: "Logging: Remove old rsyslogd config (find files)"
+  find:
+    paths: /etc/rsyslog.d
+  register: rsyslog_delete_files
+
+- name: "Logging: Remove old rsyslogd config (delete files)"
+  file:
+    path: "{{ rsyslog_delete_files }}"
+    state: absent
+
+- name: "Logging: Update config from template"
+  template:
+    src: "rsyslog/{{ item }}.j2"
+    dest: "/etc/{{ item }}"
+  loop:
+    - rsyslog.conf
+    - rsyslog.d/01-rsyslog_templates.conf
+    - rsyslog.d/02-rsyslog_rulesets.conf
