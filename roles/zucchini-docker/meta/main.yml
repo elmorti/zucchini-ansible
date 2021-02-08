@@ -1,0 +1,17 @@
+galaxy_info:
+  author: Samuelito
+  description: Installs latest Docker CE and sets up allowed users.
+  company: Zucchini Universe
+
+  license: MIT
+
+  min_ansible_version: 2.4
+
+  platforms:
+    - name: CentOS
+      versions:
+        - 8
+
+  galaxy_tags: [ docker container docker-ce ]
+
+dependencies: []

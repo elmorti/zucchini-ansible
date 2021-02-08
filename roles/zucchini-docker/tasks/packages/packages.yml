@@ -1,0 +1,35 @@
+---
+- name: "Packages: Add Docker (CE) Repository"
+  yum_repository:
+    name: docker-ce
+    description: Docker Community Edition
+    baseurl: https://download.docker.com/linux/centos/$releasever/$basearch/stable
+    gpgkey: https://download.docker.com/linux/centos/gpg
+    enabled: yes
+
+- name: "Packages: Remove previous Docker"
+  dnf:
+    name: "{{ item }}"
+    state: absent
+  loop:
+    - docker
+    - docker-client
+    - docker-client-latest
+    - docker-common
+    - docker-latest
+    - docker-latest-logrotate
+    - docker-logrotate
+    - docker-engine
+
+- name: "Packages: Run Autoremove"
+  dnf:
+    autoremove: yes
+
+- name: "Packages: Install Docker (CE)"
+  dnf:
+    name: "{{ item }}"
+    state: latest
+  loop:
+    - docker-ce
+    - docker-ce-cli
+    - containerd.io

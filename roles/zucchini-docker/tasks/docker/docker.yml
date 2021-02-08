@@ -1,0 +1,14 @@
+---
+- name: Docker - Add Docker privileged users
+  user:
+    name: "{{ item }}"
+    groups: docker
+    append: yes
+  loop: "{{ docker_users }}"
+
+- name: Start Docker service
+  systemd:
+    name: docker  
+    enabled: yes
+    daemon_reload: yes
+    state: restarted
