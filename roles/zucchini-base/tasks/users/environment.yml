@@ -17,11 +17,12 @@
   when: item.name == environment_name    
 
 - name: "Environment: Setup environment"
-  become: "{{ item.name }}"
+  become: yes
+  become_user: "{{ item.name }}"
   shell:
-    cmd: "/tmp/{{ environment_name }}/zucchini-setup.sh"
     chdir: "/tmp/{{ environment_name }}"
-    creates: ~/bash.d
+    cmd: "./zucchini-setup.sh"
+    creates: "~/bash.d"
   loop: "{{ users }}"
   when: item.enabled == true and item.environment == true
 
