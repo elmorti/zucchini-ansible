@@ -9,6 +9,16 @@
   when: item.enabled == true
   loop: "{{ users }}"
 
+- name: "Users: Create .ssh if does not exist"
+  become: "yes"
+  become_user: "{{ item.name }}"
+  file:
+    path: "~/.ssh"
+    state: "directory"
+    mode: "0700"
+  when: item.enabled == true
+  loop: "{{ users }}"
+
 - name: "Users: Remove Users"
   user:
     name: "{{ item.name }}"
