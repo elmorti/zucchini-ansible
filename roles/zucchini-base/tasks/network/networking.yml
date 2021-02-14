@@ -14,8 +14,8 @@
   nmcli:
     conn_name: main
     ifname: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['interface'] }}"
-    type: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['type'] }}"
     ip4: "{{ hostvars[inventory_hostname]['ip_address'] }}"
+    type: "{{ hostvars[inventory_hostname]['type'] }}"
     gw4: "{{ hostvars[inventory_hostname]['gw_address'] }}"
     dns4: "{{ hostvars[inventory_hostname]['dns_servers'] }}"
     dns4_search: "{{ hostvars[inventory_hostname]['dns_search'] }}"
