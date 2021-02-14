@@ -1,0 +1,17 @@
+galaxy_info:
+  author: Samuelito
+  description: Sets up Wireguard interfaces on Zucchini Nodes.
+  company: Zucchini Universe
+
+  license: MIT
+
+  min_ansible_version: 2.4
+
+  platforms:
+    - name: CentOS
+      versions:
+        - 8
+
+  galaxy_tags: [ provisioning wireguard vpn security network]
+
+dependencies: []

@@ -1,0 +1,4 @@
+---
+- include_tasks: "packages/packages.yml"
+- include_tasks: "kernel/kernel.yml"
+- include_tasks: "network/wireguard.yml"

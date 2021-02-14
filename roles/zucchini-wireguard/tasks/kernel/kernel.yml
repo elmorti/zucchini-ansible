@@ -1,0 +1,13 @@
+---
+- name: "Wireguard CentOS: Switch to Kernel Plus"
+  lineinfile:
+    path: /etc/sysconfig/kernel
+    regexp: "^DEFAULTKERNEL="
+    line: "DEFAULTKERNEL=kernel-plus-core"
+  tags:
+    - wireguard_install
+
+- name: "Wireguard CentOS: Reboot to apply new kernel"
+  reboot:
+  tags:
+    - wireguard_install

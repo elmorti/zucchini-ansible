@@ -1,0 +1,35 @@
+---
+- name: "Wireguard: Create the interface"
+  shell:
+    executable: "/bin/bash"
+    cmd: "ip link show {{ wireguard['interface'] }} 2>/dev/null 1>/dev/null; if [ ! $? -eq 0 ]; then ip link add dev {{ wireguard['interface'] }} type wireguard; fi"
+
+- name: "Wireguard: Checkout config from git repository"
+  become: yes
+  become_user: "{{ ansible_user }}"
+  git:
+    repo: "git@github.com:elmorti/zucchini-configs.git"
+    dest: "~/github/zucchini-configs"
+    key_file: "~/.ssh/id_github_zucchini-configs"
+    accept_hostkey: yes
+
+- name: "Wireguard: Setup host private config"
+  shell:
+    cmd: "wg setconf {{ wireguard['interface'] }} /home/{{ ansible_user }}/github/zucchini-configs/wireguard/zucchini_vpn.{{ inventory_hostname }}.private"
+
+- name: "Wireguard: Add peers config"
+  shell:
+    cmd: "wg addconf {{ wireguard['interface'] }} /home/{{ ansible_user }}/github/zucchini-configs/wireguard/zucchini_vpn.peers"
+
+- name: "Wireguard: Setup interface address"
+  shell:
+    cmd: "ip addr add dev {{ wireguard['interface'] }} {{ wireguard['ip4'] }}"
+
+- name: "Wireguard: Set VPN link up"
+  shell:
+    cmd: "ip link set dev {{ wireguard['interface'] }} up"
+
+- name: "Wireguard: Clean up git downloads"
+  file:
+    path: "/home/{{ ansible_user }}/github/zucchini-configs"
+    state: absent

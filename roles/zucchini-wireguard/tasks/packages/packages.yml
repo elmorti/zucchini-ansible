@@ -1,0 +1,7 @@
+---
+- name: "Wireguard CentOS: Install Kernel and Tools"
+  dnf:
+    enablerepo: "plus"
+    name:
+      - kernel-plus
+      - wireguard-tools
