@@ -1,0 +1,23 @@
+---
+- name: "Packages: Remove Docker if exists"
+  dnf:
+    name: "{{ item }}"
+    state: absent
+  loop:
+    - docker
+    - docker-client
+    - docker-client-latest
+    - docker-common
+    - docker-latest
+    - docker-latest-logrotate
+    - docker-logrotate
+    - docker-engine
+
+- name: "Packages: Run Autoremove"
+  dnf:
+    autoremove: yes
+
+- name: "Packages: Install Podman"
+  dnf:
+    name: podman
+    state: latest
