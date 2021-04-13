@@ -1,0 +1,113 @@
+---
+- name: Disable FirewallD service
+  systemd:
+    name: firewalld
+    enabled: no
+    state: stopped
+
+- name: Put SELinux in permissive mode
+  selinux:
+    policy: targeted
+    state: permissive
+
+- name: Load Kubernetes required modules
+  modprobe:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - overlay
+    - br_netfilter
+
+- name: Set Kubernetes required sysctl options
+  sysctl:
+    name: "{{ item }}"
+    value: "1"
+    state: present
+    sysctl_set: yes
+    reload: yes
+  loop:
+    - net.bridge.bridge-nf-call-ip6tables
+    - net.bridge.bridge-nf-call-iptables
+
+- name: Docker - Add Docker CE repository
+  yum_repository:
+    name: docker-ce-stable
+    description: Docker CE
+    baseurl: https://download.docker.com/linux/centos/7/$basearch/stable
+    enabled: 1
+    gpgcheck: 1
+    gpgkey: https://download.docker.com/linux/centos/gpg
+
+- name: Docker - Add Kubernetes repository
+  yum_repository:
+    name: kubernetes
+    description: Kubernetes
+    baseurl: https://packages.cloud.google.com/yum/repos/kubernetes-el7-$basearch
+    enabled: 1
+    gpgcheck: 1
+    gpgkey:
+      - https://packages.cloud.google.com/yum/doc/yum-key.gpg
+      - https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+    repo_gpgcheck: 1
+    exclude:
+      - kubelet
+      - kubeadm
+      - kubectl
+
+- name: Install ContainerD 1.2.13 from EL7
+  yum:
+    name: https://download.docker.com/linux/centos/7/x86_64/stable/Packages/containerd.io-1.2.13-3.1.el7.x86_64.rpm
+    state: present
+
+- name: Install Docker-CE
+  yum:
+    name:
+      - docker-ce
+      - docker-ce-cli
+    state: present
+
+- name: Setup Docker for Kubernetes - create etc/docker
+  file:
+    path: /etc/docker
+    state: directory
+
+- name: Setup Docker for Kubernetes - create systemd drop-in
+  file:
+    path: /etc/systemd/system/docker.service.d
+    state: directory
+
+- name: Setup Docker for Kubernetes - create daemon.json
+  copy:
+    src: ../../templates/daemon.json
+    dest: /etc/docker/daemon.json
+
+- name: Start Docker service
+  systemd:
+    name: docker
+    enabled: yes
+    daemon_reload: yes
+    state: restarted
+
+- name: Install Kubernetes
+  yum:
+    name:
+      - kubelet
+      - kubeadm
+      - kubectl
+    disable_excludes: kubernetes
+    state: present
+
+- name: Read the file with node ip
+  command: cat /tmp/vagrant_kubelet_nodeip
+  register: vagrant_kubelet_nodeip
+
+- name: Set correct Kubelet node ip
+  lineinfile:
+    path: /etc/sysconfig/kubelet
+    line: "KUBELET_EXTRA_ARGS=--node-ip={{ vagrant_kubelet_nodeip.stdout_lines[0] }}"
+
+- name: Start Kubelet service
+  systemd:
+    name: kubelet
+    enabled: yes
+    state: restarted

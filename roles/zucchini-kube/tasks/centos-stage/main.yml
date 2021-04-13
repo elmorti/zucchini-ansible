@@ -1,0 +1,6 @@
+---
+- import_tasks: kube-setup-node.yml
+- import_tasks: kube-control-node.yml
+  when: ansible_hostname == 'dev-kube001'
+- import_tasks: kube-worker-node.yml
+  when: ansible_hostname != 'dev-kube001'

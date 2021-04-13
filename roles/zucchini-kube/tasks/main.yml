@@ -1,0 +1,8 @@
+---
+- import_tasks: centos-dev/main.yml
+  # TODO(elmorti): Add and host vars = dev environment
+  when: (ansible_facts['distribution'] == "CentOS" and ansible_facts['distribution_major_version'] == "8")
+
+- import_tasks: centos-stage/main.yml
+  # TODO(elmorti): Add and host vars = dev environment
+  when: (ansible_facts['distribution'] == "CentOS" and ansible_facts['distribution_major_version'] == "7")
