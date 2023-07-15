@@ -1,0 +1,10 @@
+---
+- name: "Keys: Distribute SSH Keys"
+
+  copy:
+    src: "{{ item.file }}"
+    dest: "/home/{{ item.user }}/.ssh/{{ item.name }}"
+    mode: 0600
+    owner: "{{ item.user }}"
+
+  loop: "{{ distribute_ssh_keys }}"

@@ -1,0 +1,17 @@
+galaxy_info:
+  author: Samuelito
+  description: Setup a Zucchini Workstation
+  company: Zucchini Universe
+
+  license: MIT
+
+  min_ansible_version: 2.4
+
+  platforms:
+    - name: Fedora
+      versions:
+        - 38
+
+  galaxy_tags: [ provisioning bootstrap install server secure]
+
+dependencies: []

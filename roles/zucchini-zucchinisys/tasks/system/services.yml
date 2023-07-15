@@ -1,0 +1,21 @@
+---
+- name: "System: Disable service tuned"
+  systemd:
+    name: "tuned"
+    daemon_reload: "yes"
+    state: "stopped"
+    masked: "yes"
+
+- name: "System: Disable service kdump"
+  systemd:
+    name: "kdump"
+    daemon_reload: "yes"
+    state: "stopped"
+    masked: "yes"
+
+- name: "System: Disable service sssd"
+  systemd:
+    name: "sssd"
+    daemon_reload: "yes"
+    state: "stopped"
+    masked: "yes"

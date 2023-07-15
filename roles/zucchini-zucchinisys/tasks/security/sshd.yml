@@ -1,0 +1,38 @@
+---
+  - name: "Security: Setup SSH Server"
+    template:
+      src: "sshd/sshd_config.j2"
+      dest: "/etc/ssh/sshd_config"
+      backup: yes
+      owner: root
+      group: root
+      mode: 0644
+      validate: "/usr/sbin/sshd -T -f %s"
+    when: hostvars[inventory_hostname].environment == "prod"
+
+  - name: "Security: Add SSH port to SELinux"
+    seport:
+      ports: "{{ sshd.sshd_listen_port }}"
+      proto: tcp
+      setype: ssh_port_t
+      state: present
+    when: hostvars[inventory_hostname].environment == "prod"
+
+  - name: "Security: Add the firewall rule for new SSH port"
+    firewalld:
+      port: "{{ sshd.sshd_listen_port }}/tcp"
+      permanent: yes
+      state: enabled
+    when: hostvars[inventory_hostname].environment == "prod"
+
+  - name: "Security: Change Ansible default port"
+    set_fact:
+      ansible_port: "{{ sshd.sshd_listen_port }}"
+    when: hostvars[inventory_hostname].environment == "prod"
+
+  - name: "Security: Remove the default SSH port"
+    firewalld:
+      service: ssh
+      permanent: yes
+      state: disabled
+    when: hostvars[inventory_hostname].environment == "prod"

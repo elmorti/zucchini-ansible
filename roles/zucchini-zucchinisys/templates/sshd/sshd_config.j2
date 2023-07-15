@@ -1,0 +1,31 @@
+#{{ ansible_managed }}
+
+Port {{ sshd.sshd_listen_port }}
+AddressFamily {{ sshd.sshd_listen_family }}
+ListenAddress {{ sshd.sshd_listen_addr }}
+
+HostKey /etc/ssh/ssh_host_rsa_key
+HostKey /etc/ssh/ssh_host_ecdsa_key
+HostKey /etc/ssh/ssh_host_ed25519_key
+
+SyslogFacility AUTHPRIV
+#LogLevel INFO
+
+PermitRootLogin {{ sshd.sshd_permit_root }}
+PubkeyAuthentication yes
+
+AuthorizedKeysFile	.ssh/authorized_keys
+
+PasswordAuthentication {{ sshd.sshd_password_allowed }}
+
+ChallengeResponseAuthentication no
+
+GSSAPIAuthentication no
+GSSAPICleanupCredentials no
+
+UsePAM yes
+
+X11Forwarding {{ sshd.sshd_x11_forward }}
+
+# override default of no subsystems
+Subsystem	sftp	/usr/libexec/openssh/sftp-server

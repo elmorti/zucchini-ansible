@@ -1,0 +1,4 @@
+---
+- name: "System: Set Timezone"
+  timezone:
+    name: "{{ timezone }}"
