@@ -1,0 +1,122 @@
+---
+#
+#  Adjust these to your own defaults, or use vars/main.yml to override them.
+#
+
+timezone: "Europe/Zurich"
+
+git_repositories:
+  - name: my_repo_name
+    url: my_repo.git
+    deploykey: "~/my_repo_key"
+
+distribute_ssh_keys:
+  - user: my_localuser
+    name: key_name
+    file: "~/key_file"
+
+authorized_keys:
+ - user: my_localuser
+   file: "~/public_key_file"
+
+sshd:
+  sshd_listen_port: "1022"
+  sshd_listen_family: "inet"
+  sshd_listen_addr: "{{ ansible_ssh_host }}"
+  sshd_permit_root: false
+  sshd_password_allowed: false
+  sshd_x11_forward: false
+
+environment_name: git_repo_name_for_environment
+
+users:
+  - name: my_localuser
+    comment: Local M. User
+    password_lock: true
+    shell: /bin/bash
+    sudo: true
+    enabled: true
+    environment: true
+
+sudoers:
+  - src: "~/sudoers.j2.template"
+    dest: /etc/sudoers.d/my_sudoers
+    owner: root
+    group: root
+    mode: "0600"
+
+add_packages: []
+
+remove_packages: []
+
+rsyslog_defaults_global:
+  maxMessageSize: 64k
+  workDirectory: /var/lib/rsyslog
+
+rsyslog_defaults_main_queue:
+  queue.filename: mainqueue
+  queue.maxdiskspace: 500M
+  queue.saveonshutdown: "on"
+  queue.type: LinkedList
+  queue.size: 100000
+
+rsyslog_extra_conf: /etc/rsyslog.d/*.conf
+
+rsyslog_action_default_template: RSYSLOG_SyslogProtocol23Format
+
+rsyslog_input_modules:
+  - name: imjournal
+    options: []
+  - name: imklog
+    options: []
+  - name: imuxsock
+    options: []
+
+rsyslog_rulesets_actions:
+  - filter: "*.*"
+    type: omfile,
+    stop: false,
+    options: { file: "/var/log/rsyslogd.everything" }
+
+  - filter: "*.info;mail.falsene;authpriv.falsene;cron.falsene"
+    type: omfile
+    stop: false
+    options: { file: "/var/log/rsyslogd.messages" }
+
+  - filter: "kern.*"
+    type: omfile
+    stop: false
+    options: { file: "/var/log/rsyslogd.kern" }
+
+  - filter: "authpriv.*"
+    type: omfile
+    stop: false
+    options: { file: "/var/log/rsyslogd.secure" }
+
+  - filter: "mail.*"
+    type: omfile
+    stop: false
+    options: { file: "/var/log/rsyslogd.maillog" }
+
+  - filter: "cron.*"
+    type: omfile
+    stop: false
+    options: { file: "/var/log/rsyslogd.cron" }
+
+  - filter: "uucp,news.crit"
+    type: omfile
+    stop: false
+    options: { file: "/var/log/rsyslogd.spooler" }
+
+  - filter: "local7.*"
+    type: omfile
+    stop: false
+    options: { file: "/var/log/rsyslogd.boot.log" }
+
+  - filter: "*.emerg"
+    type: omusrmsg
+    stop: true
+    options: {}
+
+rsyslog_rulesets: []
+rsyslog_rulesets_inputs: []
