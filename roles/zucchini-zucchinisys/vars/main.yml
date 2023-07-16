@@ -1,2 +1,11 @@
 ---
 # Add your own vars here or use -e @vars_file.yml on the command line.
+
+users:
+  - name: my_localuser
+    comment: Local M. User
+    password_lock: true
+    shell: /bin/bash
+    sudo: true
+    enabled: true
+    environment: true

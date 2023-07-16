@@ -1,4 +1,4 @@
-Zucchini Universe Base Role
+Zucchini Universe
 =========
 
 Zucchini Universe - Base System
